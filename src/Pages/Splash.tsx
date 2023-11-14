@@ -12,13 +12,13 @@ export default function Splash({setIsLoading}:SplashProps): JSX.Element
     return (
         <View style={styles.container}>
             <LottieView 
-            source={require('../assets/yogiste.json')}
+            source={require('../../assets/yogiste.json')}
             autoPlay
             loop={false}
             // speed={0.1}
             onAnimationFinish={() => setIsLoading(false)}
             />
-            <Image source={require('../assets/title.png')} style={styles.image}/>
+            <Image source={require('../../assets/title.png')} style={styles.image}/>
         </View>
     )
 }

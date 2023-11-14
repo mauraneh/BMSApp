@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, Button } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faYinYang } from '@fortawesome/free-solid-svg-icons/faYinYang';
 import { faCouch } from '@fortawesome/free-solid-svg-icons/faCouch';
@@ -8,14 +8,18 @@ import { faBrain } from '@fortawesome/free-solid-svg-icons/faBrain';
 import { faUser } from '@fortawesome/free-solid-svg-icons/faUser';
 import { faBars } from '@fortawesome/free-solid-svg-icons/faBars';
 import { faCirclePlay } from '@fortawesome/free-solid-svg-icons/faCirclePlay';
+import { useNavigationContainerRef } from '@react-navigation/native';
+
 
 
 export default function Home(){
+    const navigationRef = useNavigationContainerRef(); // You can also use a regular ref with `React.useRef()`
+
     return(
         <View style={styles.container}>
             <View style={styles.menu}>
                     <FontAwesomeIcon icon={faBars} size={ 40 } />
-                    <Image source={require('../assets/icon.png')}/>
+                    <Image source={require('../../assets/icon.png')}/>
                     <FontAwesomeIcon icon={faUser} size={ 40 }/>
             </View>
             <View style={styles.label}>
@@ -24,7 +28,9 @@ export default function Home(){
             </View>
             <View style={styles.sBox}>
                 <View style={styles.rect}>
+
                     <FontAwesomeIcon icon={faYinYang} style={styles.icon} size={ 32 }/>
+
                     <Text style={styles.icon}>Calme</Text>
                 </View>
                 <View style={styles.rect}>
@@ -40,35 +46,36 @@ export default function Home(){
                     <Text style={styles.icon}>Anxieux</Text>
                 </View>
             </View>
+
             <View style={styles.bBox}>
 
-                <View style={styles.rectangle} {... styles.shadowBox}>
+        {/* Méditation guidé */}
+                <View  style={styles.rectangle} {... styles.shadowBox}>
                     <Text style={styles.heading}>Méditation guidée</Text>
-                        <View style={styles.rowFlex}>
+                    <View style={styles.rowFlex}>
+                        <View>
                             <Text style={styles.bodyText}>Laissez vous guider et détentez-vous avec la méditation guidée ..</Text>
-                            <Image source={require('../assets/mainBouddha.png')} style={styles.image}/>
-
+                            <TouchableOpacity style={styles.button} onPress={() => {console.log('bouton ok');}}>
+                                <Text style={styles.textBtn} >Écoutez</Text>
+                                <FontAwesomeIcon icon={faCirclePlay} style={styles.iconPlay} size={25}/>
+                            </TouchableOpacity> 
                         </View>
-                    <View style={styles.screenContainer}>
-                        <TouchableOpacity style={styles.button} onPress={() => {console.log('bouton ok');}}>
-                            <Text style={styles.textBtn} >Écoutez</Text>
-                            <FontAwesomeIcon icon={faCirclePlay} style={styles.iconPlay} size={25}/>
-                        </TouchableOpacity>                
+                        <Image source={require('../../assets/mainBouddha.png')} style={styles.image}/>
                     </View>
-                    
                 </View>
 
+        {/* Yoga flow */}
                 <View  style={styles.rectangle} {... styles.shadowBox}>
                     <Text style={styles.heading}>Yoga flow</Text>
                     <View style={styles.rowFlex}>
-                        <Text style={styles.bodyText}>Une playlist Yoga Electronique pour se laisser transporter !</Text>
-                        <Image source={require('../assets/zenMeditation.png')} style={styles.image}/>
-                    </View>
-                    <View style={styles.screenContainer}>
-                        <TouchableOpacity style={styles.button} onPress={() => {console.log('bouton ok');}}>
-                            <Text style={styles.textBtn} >Écoutez</Text>
-                            <FontAwesomeIcon icon={faCirclePlay} style={styles.iconPlay} size={25}/>
-                        </TouchableOpacity> 
+                        <View>
+                            <Text style={styles.bodyText}>Une playlist Yoga Electronique pour se laisser transporter !</Text>
+                            <TouchableOpacity style={styles.button} onPress={() => {console.log('bouton ok');}}>
+                                <Text style={styles.textBtn} >Écoutez</Text>
+                                <FontAwesomeIcon icon={faCirclePlay} style={styles.iconPlay} size={25}/>
+                            </TouchableOpacity> 
+                        </View>
+                        <Image source={require('../../assets/zenMeditation.png')} style={styles.image}/>
                     </View>
                 </View>
             </View>
@@ -124,7 +131,7 @@ const styles = StyleSheet.create({
         marginBottom: 6,
         backgroundColor: "#f3f8ec",
         borderRadius: 20,
-        height: 150,
+        height: 160,
         width: 339,
     },
     shadowBox: {
@@ -137,7 +144,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: '600',
         margin: 8,
-        color: '#4e6c42',
+        color: '#4c9145',
         textTransform: 'uppercase',
         textAlign: "center",
     },
@@ -145,14 +152,10 @@ const styles = StyleSheet.create({
         color: "#fff",
         padding: 2,
     },
-    screenContainer: {
-        flex: 1,
-        justifyContent: "center",
-        padding: 16,
-    },
     button: {
         height: 35,
         width: 135,
+        margin: 15,
         borderRadius: 10,
         backgroundColor: "#61b15a",
         flexDirection: 'row',
@@ -175,13 +178,15 @@ const styles = StyleSheet.create({
         color: '#fff',
     },
     image: {
+        marginTop: 15,
         width: 150,
         height: 70,
     },
     rowFlex: {
-        flexDirection: "row",
+        flexDirection: 'row',
     },
     bodyText: {
+        color: '#42484a',
         paddingLeft: 15,
         textAlign: "left",
         width: 180,
