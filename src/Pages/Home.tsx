@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, Text, StyleSheet, Image, Button, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faYinYang } from '@fortawesome/free-solid-svg-icons/faYinYang';
 import { faCouch } from '@fortawesome/free-solid-svg-icons/faCouch';
@@ -7,27 +7,8 @@ import { faVihara } from '@fortawesome/free-solid-svg-icons/faVihara';
 import { faBrain } from '@fortawesome/free-solid-svg-icons/faBrain';
 import { faUser } from '@fortawesome/free-solid-svg-icons/faUser';
 import { faBars } from '@fortawesome/free-solid-svg-icons/faBars';
+import { faCirclePlay } from '@fortawesome/free-solid-svg-icons/faCirclePlay';
 
-const AppButton = ({ onPress, title, size, backgroundColor }) => (
-    <TouchableOpacity
-        onPress={onPress}
-        style={[
-        styles.appButtonContainer,
-        size === "sm" && {
-            paddingHorizontal: 8,
-            paddingVertical: 6,
-            elevation: 6
-        },
-        backgroundColor && { backgroundColor }
-    ]}
-    >
-    <Text style={[styles.appButtonText, size === "sm" && { fontSize: 14 }]}>
-        {title}
-    </Text>
-    </TouchableOpacity>
-);
-
-  TouchableOpacity.defaultProps = { activeOpacity: 0.8 };
 
 export default function Home(){
     return(
@@ -60,19 +41,38 @@ export default function Home(){
                 </View>
             </View>
             <View style={styles.bBox}>
-            <View style={styles.rectangle}>
-                <Text>Méditation guidée</Text>
-                <Text>Laissez vous guider et détentez-vous avec la méditation guidée ..</Text>
-                <View style={styles.screenContainer}>
-                    <AppButton title="Écoutez maintenant" size="sm" backgroundColor="#007bff" />
+
+                <View style={styles.rectangle} {... styles.shadowBox}>
+                    <Text style={styles.heading}>Méditation guidée</Text>
+                        <View style={styles.rowFlex}>
+                            <Text style={styles.bodyText}>Laissez vous guider et détentez-vous avec la méditation guidée ..</Text>
+                            <Image source={require('../assets/mainBouddha.png')} style={styles.image}/>
+
+                        </View>
+                    <View style={styles.screenContainer}>
+                        <TouchableOpacity style={styles.button} onPress={() => {console.log('bouton ok');}}>
+                            <Text style={styles.textBtn} >Écoutez</Text>
+                            <FontAwesomeIcon icon={faCirclePlay} style={styles.iconPlay} size={25}/>
+                        </TouchableOpacity>                
+                    </View>
+                    
+                </View>
+
+                <View  style={styles.rectangle} {... styles.shadowBox}>
+                    <Text style={styles.heading}>Yoga flow</Text>
+                    <View style={styles.rowFlex}>
+                        <Text style={styles.bodyText}>Une playlist Yoga Electronique pour se laisser transporter !</Text>
+                        <Image source={require('../assets/zenMeditation.png')} style={styles.image}/>
+                    </View>
+                    <View style={styles.screenContainer}>
+                        <TouchableOpacity style={styles.button} onPress={() => {console.log('bouton ok');}}>
+                            <Text style={styles.textBtn} >Écoutez</Text>
+                            <FontAwesomeIcon icon={faCirclePlay} style={styles.iconPlay} size={25}/>
+                        </TouchableOpacity> 
+                    </View>
                 </View>
             </View>
-            <View  style={styles.rectangle}>
-                <Text>Rectangle 2</Text>
-            </View>
-            </View>
         </View>
-        
     )
 }
 
@@ -120,34 +120,70 @@ const styles = StyleSheet.create({
         width: 339,
     },
     rectangle: {
-        marginTop: 30,
-        marginBottom: 10,
+        marginTop: 20,
+        marginBottom: 6,
         backgroundColor: "#f3f8ec",
         borderRadius: 20,
-        height: 170,
+        height: 150,
         width: 339,
     },
+    shadowBox: {
+        shadowOffset: {width: -2, height: 4},
+        shadowColor: '#171717',
+        shadowOpacity: 0.2,
+        shadowRadius: 3,
+    },
+    heading: {
+        fontSize: 18,
+        fontWeight: '600',
+        margin: 8,
+        color: '#4e6c42',
+        textTransform: 'uppercase',
+        textAlign: "center",
+    },
     icon: {
-        color: "white",
+        color: "#fff",
         padding: 2,
     },
     screenContainer: {
         flex: 1,
         justifyContent: "center",
-        padding: 16
+        padding: 16,
     },
-    appButtonContainer: {
-        elevation: 8,
-        backgroundColor: "#009688",
+    button: {
+        height: 35,
+        width: 135,
         borderRadius: 10,
-        paddingVertical: 10,
-        paddingHorizontal: 12
+        backgroundColor: "#61b15a",
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        shadowColor: '#171717',
+        shadowOffset: {width: 0, height: 3},
+        shadowOpacity: 0.4,
+        shadowRadius: 2,
     },
-    appButtonText: {
-        fontSize: 18,
+    textBtn :{
+        fontSize: 15,
         color: "#fff",
         fontWeight: "bold",
         alignSelf: "center",
-        textTransform: "uppercase"
+        textTransform: "uppercase",
+    },
+    iconPlay :{
+        marginLeft: 15,
+        color: '#fff',
+    },
+    image: {
+        width: 150,
+        height: 70,
+    },
+    rowFlex: {
+        flexDirection: "row",
+    },
+    bodyText: {
+        paddingLeft: 15,
+        textAlign: "left",
+        width: 180,
     }
 });

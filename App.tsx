@@ -4,7 +4,7 @@ import { useState } from 'react';
 
 // Pages
 import Splash from './src/Splash';
-import Home from './src/Home';
+import Home from './src/Pages/Home';
 
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);
