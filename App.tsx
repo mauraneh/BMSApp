@@ -3,9 +3,9 @@ import { useState } from 'react';
 import 'react-native-gesture-handler';
 
 // Pages
-import Splash from './src/Pages/Splash';
-import Home from './src/Pages/Home';
-import { BottomTabs } from './src/Components/BottomTabs';
+import Splash from './Pages/Splash';
+import Home from './Pages/Home';
+import { BottomTabs } from './Components/bottomTabs';
 
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);
