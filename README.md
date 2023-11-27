@@ -16,6 +16,7 @@ npm install @react-navigation/bottom-tabs
 
 npm i react-query
 
+npm install @react-navigation/material-top-tabs react-native-tab-view
 # Reanimated
 npx create-expo-app my-app -e with-reanimated
 

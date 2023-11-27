@@ -17,7 +17,13 @@ export function BottomTabs() {
     return (
         <QueryClientProvider client={queryClient}>
         <NavigationContainer>
-            <Tab.Navigator>
+            <Tab.Navigator
+            screenOptions={{
+                tabBarStyle: {
+                    backgroundColor: "#fff",
+                    borderTopWidth: 0,
+                }
+            }}>
                 <Tab.Screen 
                     name="home" 
                     component={Home} 
@@ -27,9 +33,9 @@ export function BottomTabs() {
                         tabBarLabelStyle: { color: "#fff" }, 
                         tabBarIcon:({focused}) => 
                         focused ? (
-                            <Feather name="home" size={30} color="black" />
+                            <Entypo name="home" size={35} color="#61b15a" />
                         ) : (
-                            <Entypo name="home" size={30} color="black" />
+                            <Entypo name="home" size={35} color="black" />
                         ) }} 
                 />
                 <Tab.Screen
@@ -41,9 +47,9 @@ export function BottomTabs() {
                         tabBarLabelStyle: { color: "#fff" }, 
                         tabBarIcon:({focused}) => 
                         focused ? (
-                            <MaterialCommunityIcons name="playlist-music" size={30} color="black" />
+                            <MaterialCommunityIcons name="playlist-music" size={35} color="#61b15a" />
                         ) : (
-                            <MaterialCommunityIcons name="playlist-music-outline" size={30} color="black" />
+                            <MaterialCommunityIcons name="playlist-music-outline" size={35} color="black" />
                         ) }}
                     />
                     <Tab.Screen
@@ -55,9 +61,9 @@ export function BottomTabs() {
                         tabBarLabelStyle: { color: "#fff" }, 
                         tabBarIcon:({focused}) => 
                         focused ? (
-                            <FontAwesome name="podcast" size={30} color="black" />
+                            <FontAwesome name="podcast" size={35} color="#61b15a" />
                         ) : (
-                            <FontAwesome5 name="podcast" size={30} color="black" />
+                            <FontAwesome name="podcast" size={35} color="black" />
                         ) }}
                     />
                 </Tab.Navigator>
