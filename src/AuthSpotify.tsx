@@ -35,7 +35,7 @@ const AuthSpotify = () => {
   // Afficher un indicateur de chargement ou un message pendant l'authentification
   return (
     <View>
-      <Text>Authentification en cours...</Text>
+      <Text></Text>
     </View>
   );
 };
