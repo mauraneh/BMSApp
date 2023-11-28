@@ -19,9 +19,6 @@ const Podcast = () => {
             },
           }
         );
-
-        console.log("Response from Spotify API:", response.data);
-
         setPodcasts(response.data.items);
       } catch (error) {
         console.error("Error fetching podcasts:", error);

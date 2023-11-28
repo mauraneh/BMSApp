@@ -6,8 +6,15 @@ import "react-native-gesture-handler";
 import Splash from "./Pages/Splash";
 import Home from "./Pages/Home";
 import { BottomTabs } from "./Components/bottomTabs";
+import { AuthProvider } from "./src/AuthContext";
+import AuthSpotify from "./src/AuthSpotify";
 
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);
-  return isLoading ? <Splash setIsLoading={setIsLoading} /> : <BottomTabs />;
+  return (
+    <AuthProvider>
+      <AuthSpotify />
+      {isLoading ? <Splash setIsLoading={setIsLoading} /> : <BottomTabs />}
+    </AuthProvider>
+  );
 }
