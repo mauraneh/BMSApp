@@ -1,20 +1,28 @@
-import * as React from "react";
-import { useState } from "react";
-import "react-native-gesture-handler";
+import * as React from 'react';
+import { useState } from 'react';
+import 'react-native-gesture-handler';
+import { NavigationContainer } from '@react-navigation/native';
 
 // Pages
-import Splash from "./Pages/Splash";
-import Home from "./Pages/Home";
-import { BottomTabs } from "./Components/bottomTabs";
+import Splash from './Pages/Splash';
+import { BottomTabs } from './Components/BottomTabs';
+import FontLoader from './Components/Fonts';
 import { AuthProvider } from "./src/AuthContext";
 import AuthSpotify from "./src/AuthSpotify";
 
+
+
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);
-  return (
+   return (
     <AuthProvider>
       <AuthSpotify />
-      {isLoading ? <Splash setIsLoading={setIsLoading} /> : <BottomTabs />}
+      {isLoading ? <Splash setIsLoading={setIsLoading} /> :   <FontLoader>
+    <NavigationContainer>
+      <BottomTabs />
+    </NavigationContainer>
+  </FontLoader>}
     </AuthProvider>
   );
+
 }
