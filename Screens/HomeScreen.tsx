@@ -50,7 +50,7 @@ const HomeScreen = () => {
                             </TouchableOpacity> 
                         </View>
                         <View>
-                            <Image source={require('../assets/mainBouddha.png')} style={styles.image}/>
+                            <Image source={require('../assets/images/mainBouddha.png')} style={styles.image}/>
                         </View>
                     </View>
                 </View>
@@ -66,7 +66,7 @@ const HomeScreen = () => {
                             </TouchableOpacity> 
                         </View>
                         <View>
-                            <Image source={require('../assets/zenMeditation.png')} style={styles.image}/>
+                            <Image source={require('../assets/images/zenMeditation.png')} style={styles.image}/>
                         </View>
                     </View>
                 </View>

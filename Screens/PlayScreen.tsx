@@ -1,14 +1,14 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 
-const Onplay = () => {
+const PlayScreen = () => {
   return (
     <View>
-      <Text style={{ backgroundColor: "#000" }}>Onplay</Text>
+      <Text>PlayScreen</Text>
     </View>
   )
 }
 
-export default Onplay
+export default PlayScreen
 
 const styles = StyleSheet.create({})
