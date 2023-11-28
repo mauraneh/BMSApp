@@ -1,54 +1,34 @@
-import { View, Text, Button } from 'react-native'
-import React from 'react'
-import * as AuthSession from 'expo-auth-session';
-import * as WebBrowser from 'expo-web-browser';
-import { Credentials } from './Credentials';
-import { useAuthRequest } from 'expo-auth-session';
+import React, { useEffect } from "react";
+import axios from "axios";
+import qs from "qs";
+import { useAuth } from "./AuthContext";
 
-const code= Credentials();
+const { setToken } = useAuth();
+const CLIENT_ID = "bb658016966947448cde48167fafb4ce";
+const CLIENT_SECRET = "6bceb00adcec493fb80c42d4a01def5c";
+const base64Credentials = btoa(`${CLIENT_ID}:${CLIENT_SECRET}`);
+const redirectUri = "exp://localhost:19000/--/auth/redirect";
 
-WebBrowser.maybeCompleteAuthSession();
-
-// Endpoint
-const discovery = {
-    authorizationEndpoint: 'https://accounts.spotify.com/authorize',
-    tokenEndpoint: 'https://accounts.spotify.com/api/token',
+const authOptions = {
+  method: "post",
+  url: "https://accounts.spotify.com/api/token",
+  headers: {
+    Authorization: `Basic ${base64Credentials}`,
+    "Content-Type": "application/x-www-form-urlencoded",
+  },
+  data: `grant_type=client_credentials&redirect_uri=${encodeURIComponent(
+    redirectUri
+  )}`,
 };
 
-export default function AuthSpotify() {
-    const [request, response, promptAsync] = useAuthRequest(
-    {
-        clientId: code.CLIENT_ID,
-        scopes: [
-        "user-read-email",
-        "user-library-read",
-        "user-read-recently-played",
-        "user-top-read",
-        "playlist-read-private",
-        "playlist-read-collaborative",
-        "playlist-modify-public"
-        ],
-      // To follow the "Authorization Code Flow" to fetch token after authorizationEndpoint
-      // this must be set to false
-        usePKCE: false,
-        redirectUri: "exp://localhost:19002/--/spotify-auth-callback",
-    },
-    discovery
-    );
-
-    React.useEffect(() => {
-    if (response?.type === 'success') {
-        const { code } = response.params;
+axios(authOptions)
+  .then((response) => {
+    const accessToken = response.data.access_token;
+    if (!accessToken) {
+      console.error("PB TOKEN");
     }
-    }, [response]);
-
-    return (
-    <Button
-        disabled={!request}
-        title="Login"
-        onPress={() => {
-        promptAsync();
-        }}
-    />
-    );
-}
+    setToken(accessToken);
+  })
+  .catch((error) => {
+    console.error("Error getting access token:", error);
+  });
