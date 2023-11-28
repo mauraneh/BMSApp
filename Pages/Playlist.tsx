@@ -11,7 +11,6 @@ import {
   TouchableHighlightComponent,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import TopNav from "../Components/topTabs";
 import { ImageBackground } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import { useFonts } from "expo-font";
@@ -131,7 +130,6 @@ const Playlist: React.FunctionComponent<PlaylistProps> = () => {
   return (
     <>
       <SafeAreaView>
-        <TopNav />
         <ScrollView
           pagingEnabled
           showsHorizontalScrollIndicator={false}
