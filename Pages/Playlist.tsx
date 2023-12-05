@@ -19,10 +19,13 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Audio } from "expo-av";
 import * as Animatable from "react-native-animatable";
-
-type PlaylistProps = {};
-
-const Playlist: React.FunctionComponent<PlaylistProps> = () => {
+import { createStackNavigator } from "@react-navigation/stack";
+import { RootStackParamList } from "../src/Types";
+const Stack = createStackNavigator<RootStackParamList>();
+type PlaylistProps = {
+  navigation: any; // Vous pouvez remplacer 'any' par le type correct si vous l'avez défini ailleurs
+};
+const Playlist: React.FunctionComponent<PlaylistProps> = ({ navigation }) => {
   const scrollX = React.useRef(new Animated.Value(0)).current;
   const [fontsLoaded] = useFonts({
     Alegreya: require("../assets/fonts/Alegreya-VariableFont_wght.ttf"),
@@ -45,41 +48,35 @@ const Playlist: React.FunctionComponent<PlaylistProps> = () => {
     }[]
   >();
   const [selectedTrack, setSelectedTrack] = useState<string | null>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [sound, setSound] = useState<Audio.Sound | undefined>(undefined);
 
   useEffect(() => {
     const fetchPlaylists = async () => {
-      try {
-        const response = await axios.get(
-          "https://api.spotify.com/v1/playlists/37i9dQZF1EIf4njwtXx7O5",
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          }
-        );
-        const playlistData = response.data;
-        const extractedData = {
-          name: playlistData.name,
-          description: playlistData.description,
-          imagesUrl: playlistData.images.map((image: any) => image.url),
-        };
-        setPlaylists(extractedData);
-        const tracksResp = playlistData.tracks.items;
+      const response = await axios.get(
+        "https://api.spotify.com/v1/playlists/37i9dQZF1EIf4njwtXx7O5",
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      const playlistData = response.data;
+      const extractedData = {
+        name: playlistData.name,
+        description: playlistData.description,
+        imagesUrl: playlistData.images.map((image: any) => image.url),
+      };
+      setPlaylists(extractedData);
+      const tracksResp = playlistData.tracks.items;
 
-        const tracks = tracksResp.map((item: any) => ({
-          id: item.track.id,
-          name: item.track.name,
-          images: item.track.album.images[0].url,
-          artist: item.track.artists[0].name,
-          durationInSeconds: item.track.duration_ms / 1000,
-          music: item.track.preview_url,
-        }));
-        setTrack(tracks);
-      } catch (error) {
-        console.error("Error fetching playlists:", error);
-      }
+      const tracks = tracksResp.map((item: any) => ({
+        id: item.track.id,
+        name: item.track.name,
+        images: item.track.album.images[0].url,
+        artist: item.track.artists[0].name,
+        durationInSeconds: item.track.duration_ms / 1000,
+        music: item.track.preview_url,
+      }));
+      setTrack(tracks);
     };
 
     if (accessToken) {
@@ -88,44 +85,6 @@ const Playlist: React.FunctionComponent<PlaylistProps> = () => {
       console.error("Pas de token");
     }
   }, [accessToken]);
-  const playSound = async (track: { music: string }) => {
-    try {
-      if (sound) {
-        await sound.unloadAsync();
-      }
-
-      const { sound: newSound } = await Audio.Sound.createAsync(
-        { uri: track.music },
-        { shouldPlay: true },
-        (status) => {
-          if (status.isLoaded && status.isPlaying) {
-            setIsPlaying(true);
-          } else {
-            setIsPlaying(false);
-          }
-        }
-      );
-
-      setSound(newSound);
-    } catch (error) {
-      console.error("Erreur de lecture du son", error);
-    }
-  };
-  const handleImagePress = async (track: { id: string; music: string }) => {
-    try {
-      if (selectedTrack === track.id) {
-        if (sound) {
-          await sound.stopAsync();
-        }
-        setSelectedTrack(null);
-      } else {
-        setSelectedTrack(track.id);
-        await playSound(track);
-      }
-    } catch (error) {
-      console.error("Erreur lors du traitement de la piste", error);
-    }
-  };
 
   return (
     <>
@@ -163,49 +122,40 @@ const Playlist: React.FunctionComponent<PlaylistProps> = () => {
               <TouchableOpacity
                 key={index}
                 style={styles.songContainer}
-                onPress={() => handleImagePress(track)}
+                onPress={() => {
+                  navigation.navigate("MusicPlayer", { music: track.music });
+                }}
               >
-                <Animatable.View
-                  animation={
-                    selectedTrack === track.music ? "bounceIn" : undefined
-                  }
-                >
-                  <View>
-                    <Image
-                      source={{ uri: track.images }}
-                      style={styles.songImage}
-                    />
-                    {selectedTrack === track.music && (
-                      <Animatable.View
-                        animation={isPlaying ? "pulse" : undefined}
-                        iterationCount="infinite"
-                        style={styles.playIcon}
-                      >
-                        <AntDesign
-                          name={isPlaying ? "pause" : "play"}
-                          size={24}
-                          color="white"
-                        />
-                      </Animatable.View>
-                    )}
-                  </View>
-                  <View style={styles.infoSongs}>
-                    <Text style={styles.songTitle}>{track.name}</Text>
-                    <Text style={styles.songArtist}>{track.artist}</Text>
-                  </View>
-                  <View>
+                <View>
+                  <Image
+                    source={{ uri: track.images }}
+                    style={styles.songImage}
+                  />
+                  {selectedTrack === track.music && (
+                    <Animatable.View
+                      iterationCount="infinite"
+                      style={styles.playIcon}
+                    >
+                      <AntDesign size={24} color="white" />
+                    </Animatable.View>
+                  )}
+                </View>
+                <View style={styles.infoSongs}>
+                  <Text style={styles.songTitle}>{track.name}</Text>
+                  <Text style={styles.songArtist}>{track.artist}</Text>
+                </View>
+                <View>
+                  <Text style={styles.songDuration}>
                     <Text style={styles.songDuration}>
-                      <Text style={styles.songDuration}>
-                        {`${Math.floor(track.durationInSeconds / 60)}:${(
-                          Math.floor(track.durationInSeconds) % 60
-                        ).toLocaleString("en-US", {
-                          minimumIntegerDigits: 2,
-                          useGrouping: false,
-                        })}`}
-                      </Text>
+                      {`${Math.floor(track.durationInSeconds / 60)}:${(
+                        Math.floor(track.durationInSeconds) % 60
+                      ).toLocaleString("en-US", {
+                        minimumIntegerDigits: 2,
+                        useGrouping: false,
+                      })}`}
                     </Text>
-                  </View>
-                </Animatable.View>
+                  </Text>
+                </View>
               </TouchableOpacity>
             ))}
           </View>
