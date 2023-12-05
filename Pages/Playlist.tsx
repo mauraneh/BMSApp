@@ -129,7 +129,13 @@ const Playlist: React.FC<PlaylistProps> = ({ navigation, route }) => {
                 key={index}
                 style={styles.songContainer}
                 onPress={() => {
-                  navigation.navigate("MusicPlayer", { music: track.music });
+                  navigation.navigate("MusicPlayer", {
+                    music: track.music,
+                    artist: track.artist,
+                    name: track.name,
+                    img: track.images,
+                    durationInSeconds: track.durationInSeconds,
+                  });
                 }}
               >
                 <View>

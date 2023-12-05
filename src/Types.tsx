@@ -4,7 +4,13 @@ import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack";
 export type RootStackParamList = {
   Home: undefined;
   Meditation: undefined;
-  MusicPlayer: { music: string };
+  MusicPlayer: {
+    music: string;
+    artist: string;
+    name: string;
+    img: string;
+    durationInSeconds: number;
+  };
   Playlist: { playlistName?: string };
 };
 
