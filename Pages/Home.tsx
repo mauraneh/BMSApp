@@ -1,17 +1,14 @@
 import React from "react";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import { PlaylistProps } from "../src/Types";
 import { Entypo } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { Feather } from "@expo/vector-icons";
 import MeditationScreen from "../Screens/MeditationScreen";
 import MusicPlayer from "../Screens/MusicPlayer";
 import HomeScreen from "../Screens/HomeScreen";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { createStackNavigator } from "@react-navigation/stack";
 import { RootStackParamList } from "../src/Types";
-import Playlist from "./Playlist";
-import { useNavigation } from "@react-navigation/native";
+import { FontAwesome } from '@expo/vector-icons';
 
 const Tab = createMaterialTopTabNavigator();
 const Stack = createStackNavigator<RootStackParamList>();
@@ -37,7 +34,7 @@ export default function Home() {
         component={HomeScreen}
         options={{
           tabBarLabel: ({ color }) => (
-            <Entypo name="home" size={40} color={color} />
+            <Entypo name="home" size={30} color={color} />
           ),
         }}
       />
@@ -46,7 +43,7 @@ export default function Home() {
         component={MeditationScreen}
         options={{
           tabBarLabel: ({ color }) => (
-            <MaterialCommunityIcons name="meditation" size={50} color={color} />
+            <MaterialCommunityIcons name="meditation" size={35} color={color} />
           ),
         }}
       />
@@ -54,6 +51,11 @@ export default function Home() {
         name="MusicPlayer"
         component={MusicPlayer as React.FC}
         initialParams={{ music: "" }}
+        options={{
+          tabBarLabel: ({ color }) => (
+            <FontAwesome name="play" size={24} color="black" />
+          ),
+        }}
       />
     </Tab.Navigator>
   );

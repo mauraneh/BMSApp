@@ -34,9 +34,9 @@ export function BottomTabs() {
                         tabBarLabelStyle: { color: "#fff"}, 
                         tabBarIcon:({focused}) => 
                         focused ? (
-                            <Entypo name="home" size={40} color="#61b15a" />
+                            <Entypo name="home" size={30} color="#61b15a" />
                         ) : (
-                            <Entypo name="home" size={40} color="black" />
+                            <Entypo name="home" size={30} color="black" />
                         ) }} 
                 />
                 <Tab.Screen
@@ -48,9 +48,9 @@ export function BottomTabs() {
                         tabBarLabelStyle: { color: "#fff" }, 
                         tabBarIcon:({focused}) => 
                         focused ? (
-                            <MaterialCommunityIcons name="playlist-music" size={40} color="#61b15a" />
+                            <MaterialCommunityIcons name="playlist-music" size={30} color="#61b15a" />
                         ) : (
-                            <MaterialCommunityIcons name="playlist-music-outline" size={40} color="black" />
+                            <MaterialCommunityIcons name="playlist-music-outline" size={30} color="black" />
                         ) }}
                     />
                     <Tab.Screen
@@ -62,9 +62,9 @@ export function BottomTabs() {
                         tabBarLabelStyle: { color: "#fff" }, 
                         tabBarIcon:({focused}) => 
                         focused ? (
-                            <FontAwesome name="podcast" size={40} color="#61b15a" />
+                            <FontAwesome name="podcast" size={30} color="#61b15a" />
                         ) : (
-                            <FontAwesome name="podcast" size={40} color="black" />
+                            <FontAwesome name="podcast" size={30} color="black" />
                         ) }}
                     />
                 </Tab.Navigator>
