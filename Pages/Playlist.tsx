@@ -24,6 +24,7 @@ import {
   createStackNavigator,
 } from "@react-navigation/stack";
 import { RootStackParamList } from "../src/Types";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 const Stack = createStackNavigator<RootStackParamList>();
 
 const Playlist: React.FC<PlaylistProps> = ({ navigation, route }) => {
@@ -53,38 +54,83 @@ const Playlist: React.FC<PlaylistProps> = ({ navigation, route }) => {
 
   useEffect(() => {
     const fetchPlaylists = async () => {
-      let playlistEndpoint =
-        "https://api.spotify.com/v1/playlists/37i9dQZF1EIf4njwtXx7O5";
+      try {
+        // Vérifiez si les données sont en cache
+        const cachedDataString = await AsyncStorage.getItem("cachedPlaylists");
+        if (cachedDataString) {
+          const cachedData = JSON.parse(cachedDataString);
+          setPlaylists(cachedData.playlists);
+          setTrack(cachedData.tracks);
+          return; // Pas besoin de faire la requête API si les données sont en cache
+        }
 
-      if (playlistName && playlistName.trim() !== "") {
-        playlistEndpoint = `https://api.spotify.com/v1/playlists/${playlistName}`;
+        let retryCount = 3; // Nombre de tentatives de réessai
+        let success = false;
+
+        while (retryCount > 0 && !success) {
+          try {
+            let playlistEndpoint =
+              "https://api.spotify.com/v1/playlists/37i9dQZF1EIf4njwtXx7O5";
+
+            if (playlistName && playlistName.trim() !== "") {
+              playlistEndpoint = `https://api.spotify.com/v1/playlists/${playlistName}`;
+            }
+
+            const response = await axios.get(playlistEndpoint, {
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+              },
+            });
+
+            const playlistData = response.data;
+            const extractedData = {
+              name: playlistData.name,
+              description: playlistData.description,
+              imagesUrl: playlistData.images.map((image: any) => image.url),
+            };
+            setPlaylists(extractedData);
+
+            const tracksResp = playlistData.tracks.items;
+            const tracks = tracksResp.map((item: any) => ({
+              id: item.track.id,
+              name: item.track.name,
+              images: item.track.album.images[0].url,
+              artist: item.track.artists[0].name,
+              durationInSeconds: item.track.duration_ms / 1000,
+              music: item.track.preview_url,
+            }));
+            setTrack(tracks);
+
+            // Stockez les données en cache
+            const dataToCache = { playlists: extractedData, tracks };
+            await AsyncStorage.setItem(
+              "cachedPlaylists",
+              JSON.stringify(dataToCache)
+            );
+
+            success = true;
+          } catch (error) {
+            if (
+              axios.isAxiosError(error) && // Vérifier si c'est une erreur Axios
+              error.response && // Vérifier si la réponse existe
+              error.response.status === 429
+            ) {
+              // Attendez un certain temps avant de réessayer
+              await new Promise((resolve) => setTimeout(resolve, 1000));
+              retryCount--;
+            } else {
+              console.error("Une autre erreur s'est produite :", error);
+              break; // Sortir de la boucle en cas d'autres erreurs
+            }
+          }
+        }
+      } catch (error) {
+        console.error(
+          "Erreur lors de la récupération des données en cache :",
+          error
+        );
       }
-      const response = await axios.get(playlistEndpoint, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-
-      const playlistData = response.data;
-      const extractedData = {
-        name: playlistData.name,
-        description: playlistData.description,
-        imagesUrl: playlistData.images.map((image: any) => image.url),
-      };
-      setPlaylists(extractedData);
-
-      const tracksResp = playlistData.tracks.items;
-      const tracks = tracksResp.map((item: any) => ({
-        id: item.track.id,
-        name: item.track.name,
-        images: item.track.album.images[0].url,
-        artist: item.track.artists[0].name,
-        durationInSeconds: item.track.duration_ms / 1000,
-        music: item.track.preview_url,
-      }));
-      setTrack(tracks);
     };
-
     if (accessToken) {
       fetchPlaylists();
     } else {

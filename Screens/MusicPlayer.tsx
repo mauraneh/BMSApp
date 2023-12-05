@@ -24,8 +24,10 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ route }) => {
     music: "",
   };
 
-  const [isPlaying, setIsPlaying] = useState(false);
   const [sound, setSound] = useState<Audio.Sound | null>(null);
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [position, setPosition] = useState<number>(0);
+  const [duration, setDuration] = useState<number | null>(null);
 
   useEffect(() => {
     const loadAudio = async () => {
@@ -33,33 +35,81 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ route }) => {
         try {
           const { sound } = await Audio.Sound.createAsync(
             { uri: music },
-            { shouldPlay: isPlaying }
+            { shouldPlay: false }
           );
           setSound(sound);
+
+          sound.setOnPlaybackStatusUpdate((status) => {
+            if (status.isLoaded) {
+              if (status.positionMillis !== undefined) {
+                setPosition(status.positionMillis / 1000);
+              }
+              if (status.durationMillis !== undefined) {
+                setDuration(status.durationMillis / 1000);
+              }
+              setIsPlaying(status.isPlaying);
+            }
+          });
+
+          // Charger le statut initial
+          const initialStatus = await sound.getStatusAsync();
+          if (initialStatus.isLoaded) {
+            if (initialStatus.positionMillis !== undefined) {
+              setPosition(initialStatus.positionMillis / 1000);
+            }
+            if (initialStatus.durationMillis !== undefined) {
+              setDuration(initialStatus.durationMillis / 1000);
+            }
+            setIsPlaying(initialStatus.isPlaying);
+          } else if (initialStatus.error) {
+            console.error(
+              "Erreur lors du chargement de l'élément audio :",
+              initialStatus.error
+            );
+          }
         } catch (error) {
-          console.error("Erreur lors du chargement de l'élément audio:", error);
+          console.error(
+            "Erreur lors du chargement de l'élément audio :",
+            error
+          );
         }
       }
     };
 
     loadAudio();
 
-    // Nettoyer lors du démontage du composant
     return () => {
       if (sound) {
         sound.unloadAsync();
       }
     };
-  }, [music, isPlaying]);
+  }, [music]);
 
-  const handlePlayPause = async () => {
+  useEffect(() => {
+    // Mettre à jour la position toutes les 500 ms
+    const interval = setInterval(async () => {
+      if (sound && isPlaying) {
+        const status = await sound.getStatusAsync();
+
+        // Vérifier si status est une instance de AVPlaybackStatus
+        if ("positionMillis" in status && status.durationMillis !== undefined) {
+          setPosition(status.positionMillis / 1000);
+          setDuration(status.durationMillis / 1000);
+        }
+      }
+    }, 500);
+
+    // Nettoyer l'intervalle lors du démontage du composant
+    return () => clearInterval(interval);
+  }, [sound, isPlaying]);
+
+  const togglePlayback = async () => {
     if (sound) {
       if (isPlaying) {
         await sound.pauseAsync();
       } else {
         await sound.playAsync();
       }
-      setIsPlaying(!isPlaying);
     }
   };
 
@@ -75,37 +125,27 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ route }) => {
           <Slider
             style={styles.slider}
             minimumValue={0}
-            maximumValue={1}
+            maximumValue={duration || 1}
             minimumTrackTintColor="#61B15A"
             maximumTrackTintColor="#F4F8EC"
             thumbTintColor="#61B15A"
             thumbTouchSize={{ width: 50, height: 50 }}
-            thumbStyle={{
-              height: 20,
-              width: 20,
-              shadowColor: "#000",
-              shadowOffset: { width: -2, height: -2 },
-              shadowOpacity: 0.25,
-              shadowRadius: 3,
-              elevation: 10,
-            }}
-            trackStyle={{
-              height: 10,
-              backgroundColor: "#E0E5EC",
-              shadowColor: "#000",
-              shadowOffset: { width: 2, height: 2 },
-              shadowOpacity: 0.15,
-              shadowRadius: 2,
-              elevation: 5,
+            value={position}
+            onValueChange={(value) => setPosition(value)}
+            onSlidingComplete={async (value) => {
+              if (sound) {
+                await sound.setPositionAsync(value * 1000);
+                setPosition(value);
+              }
             }}
           />
+
           <Text style={styles.songDuration}>
-            {`${Math.floor(durationInSeconds / 60)}:${(
-              Math.floor(durationInSeconds) % 60
-            ).toLocaleString("en-US", {
-              minimumIntegerDigits: 2,
-              useGrouping: false,
-            })}`}
+            {position !== null && duration !== null
+              ? `${Math.floor(position / 60)}:${
+                  Math.floor(position) % 60
+                } / ${Math.floor(duration / 60)}:${Math.floor(duration) % 60}`
+              : "Loading..."}
           </Text>
           <View style={styles.playerButtons}>
             <TouchableOpacity>
@@ -118,15 +158,12 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ route }) => {
                 <AntDesign name="banckward" size={20} color="grey" />
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.playerButton}
-              onPress={handlePlayPause}
-            >
+            <TouchableOpacity onPress={togglePlayback}>
               <Text>
-                <AntDesign
-                  name={isPlaying ? "pause" : "caretright"}
-                  size={24}
-                  color="white"
+                <FontAwesome
+                  name={isPlaying ? "pause" : "play"}
+                  size={20}
+                  color="grey"
                 />
               </Text>
             </TouchableOpacity>
@@ -146,7 +183,6 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ route }) => {
     </SafeAreaView>
   );
 };
-
 export default MusicPlayer;
 
 const styles = StyleSheet.create({
@@ -200,7 +236,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   playerButtons: {
-    marginLeft: 90,
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "center",
