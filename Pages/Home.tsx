@@ -8,8 +8,11 @@ import MeditationScreen from "../Screens/MeditationScreen";
 import MusicPlayer from "../Screens/MusicPlayer";
 import HomeScreen from "../Screens/HomeScreen";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { createStackNavigator } from "@react-navigation/stack";
+import { RootStackParamList } from "../src/Types";
 
 const Tab = createMaterialTopTabNavigator();
+const Stack = createStackNavigator<RootStackParamList>();
 
 export default function Home() {
   const insets = useSafeAreaInsets();
@@ -44,15 +47,7 @@ export default function Home() {
           ),
         }}
       />
-      <Tab.Screen
-        name="OnplayScreen"
-        component={MusicPlayer}
-        options={{
-          tabBarLabel: ({ color }) => (
-            <Feather name="play" size={40} color={color} />
-          ),
-        }}
-      />
+      <Stack.Screen name="MusicPlayer" component={MusicPlayer} />
     </Tab.Navigator>
   );
 }

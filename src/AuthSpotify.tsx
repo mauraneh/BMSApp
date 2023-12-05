@@ -12,21 +12,17 @@ const AuthSpotify = () => {
 
   useEffect(() => {
     const authenticate = async () => {
-      try {
-        const response = await axios.post(
-          "https://accounts.spotify.com/api/token",
-          "grant_type=client_credentials",
-          {
-            headers: {
-              Authorization: `Basic ${auth}`,
-              "Content-Type": "application/x-www-form-urlencoded",
-            },
-          }
-        );
-        setToken(response.data.access_token);
-      } catch (error) {
-        console.error("Authentication error:", error);
-      }
+      const response = await axios.post(
+        "https://accounts.spotify.com/api/token",
+        "grant_type=client_credentials",
+        {
+          headers: {
+            Authorization: `Basic ${auth}`,
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+        }
+      );
+      setToken(response.data.access_token);
     };
 
     authenticate(); // Appeler la fonction d'authentification lors du montage
