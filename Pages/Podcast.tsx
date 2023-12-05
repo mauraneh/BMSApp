@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth } from "../src/AuthContext";
 
@@ -33,25 +33,49 @@ const Podcast = () => {
   }, [accessToken]);
 
   return (
-    <SafeAreaView style={styles.container}>
-      {podcasts.map((podcast) => (
-        <View key={podcast.id} style={styles.showContainer}>
-          <Text>{podcast.name}</Text>
-          {/* Ajoutez d'autres informations sur l'émission selon vos besoins */}
-        </View>
-      ))}
+    <SafeAreaView style={styles.tools}>
+      <TouchableOpacity style={styles.moodBooster}>
+        {podcasts.map((podcast) => (
+          <View key={podcast.id} style={styles.rectangle}>
+            <Text style={styles.textWrapper}>{podcast.name}</Text>
+          </View>
+        ))}
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };
-
 const styles = StyleSheet.create({
-  container: {
+  tools: {
+    backgroundColor: "#ffffff",
     flex: 1,
+    flexDirection: "row",
     justifyContent: "center",
-    alignItems: "center",
+    width: "100%",
   },
   showContainer: {
     marginVertical: 10,
+  },
+  moodBooster: {
+    height: 153,
+    width: 117,
+    // ... Autres styles spécifiques à cet élément ...
+  },
+  rectangle: {
+    backgroundColor: "#adce74",
+    borderRadius: 20,
+    height: 115,
+    // ... Autres styles spécifiques à cet élément ...
+  },
+  vector: {
+    height: 101,
+    // ... Autres styles spécifiques à cet élément ...
+  },
+  textWrapper: {
+    color: "#ffffff",
+    fontFamily: "Alegreya Sans-Medium",
+    fontSize: 18,
+    fontWeight: "500",
+    // ... Autres styles spécifiques à cet élément ...
   },
 });
 
