@@ -40,7 +40,7 @@ export function BottomTabs() {
                         ) }} 
                 />
                 <Tab.Screen
-                    name="playlist"
+                    name="Playlist"
                     component={Playlist}
                     options={{ 
                         tabBarLabel: "Playlist", 
