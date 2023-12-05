@@ -73,9 +73,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
               </Text>
               <TouchableOpacity
                 style={styles.button}
-                onPress={() => {
-                  console.log("bouton ok");
-                }}
+                onPress={() => handlePlaylistClick("37sktwnER4qfx8RwQ5eqiB")}
               >
                 <Text style={styles.textBtn}>Écoutez</Text>
                 <FontAwesomeIcon
@@ -103,9 +101,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
               </Text>
               <TouchableOpacity
                 style={styles.button}
-                onPress={() => {
-                  console.log("bouton ok");
-                }}
+                onPress={() => handlePlaylistClick("37sktwnER4qfx8RwQ5eqiB")}
               >
                 <Text style={styles.textBtn}>Écoutez</Text>
                 <FontAwesomeIcon
