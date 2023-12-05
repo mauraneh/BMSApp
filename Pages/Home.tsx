@@ -1,6 +1,6 @@
 import React from "react";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-
+import { PlaylistProps } from "../src/Types";
 import { Entypo } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
@@ -10,12 +10,15 @@ import HomeScreen from "../Screens/HomeScreen";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { createStackNavigator } from "@react-navigation/stack";
 import { RootStackParamList } from "../src/Types";
+import Playlist from "./Playlist";
+import { useNavigation } from "@react-navigation/native";
 
 const Tab = createMaterialTopTabNavigator();
 const Stack = createStackNavigator<RootStackParamList>();
 
 export default function Home() {
   const insets = useSafeAreaInsets();
+
   return (
     <Tab.Navigator
       initialRouteName="Home"
@@ -47,7 +50,11 @@ export default function Home() {
           ),
         }}
       />
-      <Stack.Screen name="MusicPlayer" component={MusicPlayer} />
+      <Tab.Screen
+        name="MusicPlayer"
+        component={MusicPlayer as React.FC}
+        initialParams={{ music: "" }}
+      />
     </Tab.Navigator>
   );
 }

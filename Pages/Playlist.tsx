@@ -17,15 +17,18 @@ import { useFonts } from "expo-font";
 import { useAuth } from "../src/AuthContext";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { PlaylistProps } from "../src/Types";
 import { Audio } from "expo-av";
 import * as Animatable from "react-native-animatable";
-import { createStackNavigator } from "@react-navigation/stack";
+import {
+  StackNavigationProp,
+  createStackNavigator,
+} from "@react-navigation/stack";
 import { RootStackParamList } from "../src/Types";
 const Stack = createStackNavigator<RootStackParamList>();
-type PlaylistProps = {
-  navigation: any; // Vous pouvez remplacer 'any' par le type correct si vous l'avez défini ailleurs
-};
-const Playlist: React.FunctionComponent<PlaylistProps> = ({ navigation }) => {
+
+const Playlist: React.FC<PlaylistProps> = ({ navigation, route }) => {
+  const { playlistName } = route.params ?? { playlistName: "" };
   const scrollX = React.useRef(new Animated.Value(0)).current;
   const [fontsLoaded] = useFonts({
     Alegreya: require("../assets/fonts/Alegreya-VariableFont_wght.ttf"),
@@ -51,14 +54,18 @@ const Playlist: React.FunctionComponent<PlaylistProps> = ({ navigation }) => {
 
   useEffect(() => {
     const fetchPlaylists = async () => {
-      const response = await axios.get(
-        "https://api.spotify.com/v1/playlists/37i9dQZF1EIf4njwtXx7O5",
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
+      let playlistEndpoint =
+        "https://api.spotify.com/v1/playlists/37i9dQZF1EIf4njwtXx7O5";
+
+      if (playlistName && playlistName.trim() !== "") {
+        playlistEndpoint = `https://api.spotify.com/v1/playlists/${playlistName}`;
+      }
+      const response = await axios.get(playlistEndpoint, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
       const playlistData = response.data;
       const extractedData = {
         name: playlistData.name,
@@ -66,8 +73,8 @@ const Playlist: React.FunctionComponent<PlaylistProps> = ({ navigation }) => {
         imagesUrl: playlistData.images.map((image: any) => image.url),
       };
       setPlaylists(extractedData);
-      const tracksResp = playlistData.tracks.items;
 
+      const tracksResp = playlistData.tracks.items;
       const tracks = tracksResp.map((item: any) => ({
         id: item.track.id,
         name: item.track.name,
