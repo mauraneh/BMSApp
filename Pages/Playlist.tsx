@@ -8,7 +8,6 @@ import {
   Animated,
   Image,
   TouchableOpacity,
-  TouchableHighlightComponent,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ImageBackground } from "react-native";
