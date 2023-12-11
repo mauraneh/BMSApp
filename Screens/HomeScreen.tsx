@@ -1,5 +1,5 @@
 import * as React from "react";
-import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, Image, TouchableOpacity, Dimensions } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
@@ -8,7 +8,7 @@ import { faCouch } from "@fortawesome/free-solid-svg-icons/faCouch";
 import { faVihara } from "@fortawesome/free-solid-svg-icons/faVihara";
 import { faBrain } from "@fortawesome/free-solid-svg-icons/faBrain";
 import { faCirclePlay } from "@fortawesome/free-solid-svg-icons/faCirclePlay";
-import { useNavigation } from "@react-navigation/native";
+
 import {
   StackNavigationProp,
   createStackNavigator,
@@ -128,6 +128,7 @@ export default HomeScreen;
 
 const styles = StyleSheet.create({
   container: {
+    height: Dimensions.get("screen").height,
     backgroundColor: "#fff",
     alignItems: "center",
     marginTop: -20,
