@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import React, {useEffect, useRef} from 'react';
+import { View, StyleSheet, Text, Animated } from 'react-native';
 import { Dispatch, SetStateAction } from 'react';
 import LottieView from 'lottie-react-native';
 
@@ -9,16 +9,29 @@ interface SplashProps{
 
 export default function Splash({setIsLoading}:SplashProps): JSX.Element
 {
+    const fadeAnim = useRef(new Animated.Value(0)).current;
+
+    useEffect(() => {
+        Animated.timing(
+            fadeAnim,
+            {
+                toValue: 1,
+                duration: 2000,
+                useNativeDriver: true,
+            }
+        ).start();
+    }, [fadeAnim]);
+
     return (
         <View style={styles.container}>
-            <LottieView 
-            source={require('../assets/lotus.json')}
-            autoPlay
-            loop={false}
-            // speed={0.1}
-            onAnimationFinish={() => setIsLoading(false)}
+        <Animated.Text style={{...styles.text, opacity: fadeAnim}}>Body, Mind & Spirit</Animated.Text>
+            <LottieView
+                style={styles.lottie}
+                source={require('../assets/yogiste.json')}
+                autoPlay
+                loop={false}
+                onAnimationFinish={() => setIsLoading(false)}
             />
-            <Text style={styles.text}>Body, Mind & Spirit</Text>
         </View>
     )
 }
@@ -30,10 +43,17 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
+    lottie: {
+        justifyContent: 'flex-end',
+        width: 400,
+        height: 400,
+    },
     text: {
+        fontFamily: 'Verdana',
         flex: 1,
+        fontWeight: '200',
         marginTop: 100,
-        fontSize: 40,
-        color: 'lightblue',
+        fontSize: 60,
+        color: '#adce74',
     },
 });

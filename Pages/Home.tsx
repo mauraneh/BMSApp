@@ -6,12 +6,9 @@ import MeditationScreen from "../Screens/MeditationScreen";
 import MusicPlayer from "../Screens/MusicPlayer";
 import HomeScreen from "../Screens/HomeScreen";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { createStackNavigator } from "@react-navigation/stack";
-import { RootStackParamList } from "../src/Types";
 import { FontAwesome } from '@expo/vector-icons';
 
 const Tab = createMaterialTopTabNavigator();
-const Stack = createStackNavigator<RootStackParamList>();
 
 export default function Home() {
   const insets = useSafeAreaInsets();
