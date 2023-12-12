@@ -81,7 +81,7 @@ const Playlist: React.FC<PlaylistProps> = ({ navigation, route }) => {
             }
           }
 
-          let retryCount = 3; // Nombre de tentatives de réessai
+          let retryCount = 5; // Nombre de tentatives de réessai
           let success = false;
 
           while (retryCount > 0 && !success) {

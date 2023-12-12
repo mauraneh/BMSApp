@@ -40,21 +40,21 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.rect}
-          onPress={() => handlePlaylistClick("37sktwnER4qfx8RwQ5eqiB")}
+          onPress={() => handlePlaylistClick("77Ak0Z8SAmcyFDNryaLvOD")}
         >
           <FontAwesomeIcon icon={faCouch} style={styles.icon} size={32} />
           <Text style={styles.icon}>Relax</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.rect}
-          onPress={() => handlePlaylistClick("0f3pp8fkTBb7GTJhNSlRkJ")}
+          onPress={() => handlePlaylistClick("07X0m6xaT4mkVz8mxSRtna")}
         >
           <FontAwesomeIcon icon={faVihara} style={styles.icon} size={32} />
           <Text style={styles.icon}>Focus</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.rect}
-          onPress={() => handlePlaylistClick("0jn9okflBMoefQ4K47Y7OV")}
+          onPress={() => handlePlaylistClick("4WiC0QXMFanSfaBovlKEcX")}
         >
           <FontAwesomeIcon icon={faBrain} style={styles.icon} size={32} />
           <Text style={styles.icon}>Anxieux</Text>
