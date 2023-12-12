@@ -8,6 +8,7 @@ import {
   Animated,
   Image,
   TouchableOpacity,
+  Dimensions,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ImageBackground } from "react-native";
@@ -19,7 +20,9 @@ import axios from "axios";
 import { PlaylistProps } from "../src/Types";
 import { Audio } from "expo-av";
 import * as Animatable from "react-native-animatable";
-import { createStackNavigator } from "@react-navigation/stack";
+import {
+  createStackNavigator,
+} from "@react-navigation/stack";
 import { RootStackParamList } from "../src/Types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 const Stack = createStackNavigator<RootStackParamList>();
@@ -153,8 +156,7 @@ const Playlist: React.FC<PlaylistProps> = ({ navigation, route }) => {
   }, [accessToken]);
 
   return (
-    <>
-      <SafeAreaView>
+      <SafeAreaView style={styles.bg}>
         <ScrollView
           pagingEnabled
           showsHorizontalScrollIndicator={false}
@@ -233,11 +235,14 @@ const Playlist: React.FC<PlaylistProps> = ({ navigation, route }) => {
           </View>
         </ScrollView>
       </SafeAreaView>
-    </>
   );
 };
 
 const styles = StyleSheet.create({
+  bg: {
+    height: Dimensions.get("screen").height,
+    backgroundColor: "#fff",
+  },
   container: {
     flex: 1,
     paddingTop: StatusBar.currentHeight,

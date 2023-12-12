@@ -165,6 +165,8 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ route }) => {
             minimumTrackTintColor="#61B15A"
             maximumTrackTintColor="#F4F8EC"
             thumbTintColor="#61B15A"
+            thumbStyle={{ width: 15, height: 15 }}
+            trackStyle={{ height: 10, borderRadius: 10 }}
             thumbTouchSize={{ width: 50, height: 50 }}
             value={position}
             onValueChange={onSliderValueChange}
@@ -197,7 +199,7 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ route }) => {
               <Text>
                 <FontAwesome
                   name={isPlaying ? "pause" : "play"}
-                  size={20}
+                  size={30}
                   color="grey"
                 />
               </Text>
@@ -256,6 +258,7 @@ const styles = StyleSheet.create({
     fontFamily: "Alegreya",
     fontSize: 20,
     color: "grey",
+    marginBottom: 30,
   },
   playerContainer: {
     justifyContent: "center",
@@ -277,7 +280,7 @@ const styles = StyleSheet.create({
     width: Dimensions.get("screen").width,
   },
   slider: {
-    marginTop: 20,
+    margin: 20,
     width: 260,
     height: 40,
   },

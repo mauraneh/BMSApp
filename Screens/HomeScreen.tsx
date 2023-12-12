@@ -33,7 +33,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       <View style={styles.sBox}>
         <TouchableOpacity
           style={styles.rect}
-          onPress={() => handlePlaylistClick("42eLtt8RUBboyXLmNQWU5a")}
+          onPress={() => handlePlaylistClick("3pbTjX7cWO3SB00WESeQrS")}
         >
           <FontAwesomeIcon icon={faYinYang} style={styles.icon} size={32} />
           <Text style={styles.icon}>Calme</Text>

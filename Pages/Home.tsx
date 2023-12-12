@@ -19,7 +19,7 @@ export default function Home() {
       screenOptions={{
         tabBarInactiveTintColor: "#000",
         tabBarActiveTintColor: "#4c9145",
-        tabBarStyle: { backgroundColor: "#fff", marginTop: insets.top },
+        tabBarStyle: { backgroundColor: "#fff", paddingTop: insets.top },
         tabBarIndicatorStyle: {
           borderBottomColor: "#4c9145",
           borderBottomWidth: 2,
