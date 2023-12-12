@@ -106,15 +106,15 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   imageTitle: {
-    width: Dimensions.get('window').width,
+    width: Dimensions.get("window").width,
   },
   textTitle: {
-    fontFamily: 'Alegreya',
-    color: 'white',
+    fontFamily: "Alegreya",
+    color: "white",
     fontSize: 30,
     lineHeight: 100,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center",
   },
 });
 

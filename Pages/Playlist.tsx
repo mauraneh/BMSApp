@@ -51,6 +51,9 @@ const Playlist: React.FC<PlaylistProps> = ({ navigation, route }) => {
     }[]
   >();
   const [selectedTrack, setSelectedTrack] = useState<string | null>(null);
+  const [currentPlaylistName, setCurrentPlaylistName] = useState<string | null>(
+    null
+  );
 
   useEffect(() => {
     const fetchPlaylists = async () => {
@@ -59,68 +62,82 @@ const Playlist: React.FC<PlaylistProps> = ({ navigation, route }) => {
         const cachedDataString = await AsyncStorage.getItem("cachedPlaylists");
         if (cachedDataString) {
           const cachedData = JSON.parse(cachedDataString);
-          setPlaylists(cachedData.playlists);
-          setTrack(cachedData.tracks);
-          return; // Pas besoin de faire la requête API si les données sont en cache
-        }
 
-        let retryCount = 3; // Nombre de tentatives de réessai
-        let success = false;
+          if (playlistName && playlistName.trim() !== "") {
+            const playlistFromCache = cachedData.playlists;
+            const track = cachedData.tracks;
 
-        while (retryCount > 0 && !success) {
-          try {
-            let playlistEndpoint =
-              "https://api.spotify.com/v1/playlists/37i9dQZF1EIf4njwtXx7O5";
-
-            if (playlistName && playlistName.trim() !== "") {
-              playlistEndpoint = `https://api.spotify.com/v1/playlists/${playlistName}`;
-            }
-
-            const response = await axios.get(playlistEndpoint, {
-              headers: {
-                Authorization: `Bearer ${accessToken}`,
-              },
-            });
-
-            const playlistData = response.data;
-            const extractedData = {
-              name: playlistData.name,
-              description: playlistData.description,
-              imagesUrl: playlistData.images.map((image: any) => image.url),
-            };
-            setPlaylists(extractedData);
-
-            const tracksResp = playlistData.tracks.items;
-            const tracks = tracksResp.map((item: any) => ({
-              id: item.track.id,
-              name: item.track.name,
-              images: item.track.album.images[0].url,
-              artist: item.track.artists[0].name,
-              durationInSeconds: item.track.duration_ms / 1000,
-              music: item.track.preview_url,
-            }));
-            setTrack(tracks);
-
-            // Stockez les données en cache
-            const dataToCache = { playlists: extractedData, tracks };
-            await AsyncStorage.setItem(
-              "cachedPlaylists",
-              JSON.stringify(dataToCache)
-            );
-
-            success = true;
-          } catch (error) {
-            if (
-              axios.isAxiosError(error) && // Vérifier si c'est une erreur Axios
-              error.response && // Vérifier si la réponse existe
-              error.response.status === 429
-            ) {
-              // Attendez un certain temps avant de réessayer
-              await new Promise((resolve) => setTimeout(resolve, 1000));
-              retryCount--;
+            // Mise à jour du traitement de playlistName après la vérification des données en cache
+            if (playlistFromCache.id === playlistName) {
+              // Si le nom de la playlist dans le cache correspond à playlistName, utilisez-le
+              setPlaylists(playlistFromCache);
+              setTrack(track);
+              return;
             } else {
-              console.error("Une autre erreur s'est produite :", error);
-              break; // Sortir de la boucle en cas d'autres erreurs
+              setPlaylists(cachedData.playlists);
+              setTrack(cachedData.tracks);
+              // Mettez à jour le currentPlaylistName pour effectuer la requête API correcte
+              setCurrentPlaylistName(playlistFromCache.id);
+            }
+          }
+
+          let retryCount = 3; // Nombre de tentatives de réessai
+          let success = false;
+
+          while (retryCount > 0 && !success) {
+            try {
+              let playlistEndpoint =
+                "https://api.spotify.com/v1/playlists/37i9dQZF1EIf4njwtXx7O5";
+
+              if (playlistName && playlistName.trim() !== "") {
+                playlistEndpoint = `https://api.spotify.com/v1/playlists/${playlistName}`;
+              }
+
+              const response = await axios.get(playlistEndpoint, {
+                headers: {
+                  Authorization: `Bearer ${accessToken}`,
+                },
+              });
+
+              const playlistData = response.data;
+              const extractedData = {
+                name: playlistData.name,
+                description: playlistData.description,
+                imagesUrl: playlistData.images.map((image: any) => image.url),
+              };
+              setPlaylists(extractedData);
+
+              const tracksResp = playlistData.tracks.items;
+              const tracks = tracksResp.map((item: any) => ({
+                id: item.track.id,
+                name: item.track.name,
+                images: item.track.album.images[0].url,
+                artist: item.track.artists[0].name,
+                durationInSeconds: item.track.duration_ms / 1000,
+                music: item.track.preview_url,
+              }));
+              setTrack(tracks);
+
+              // Stockez les données en cache
+              const dataToCache = { playlists: extractedData, tracks: tracks };
+              await AsyncStorage.setItem(
+                "cachedPlaylists",
+                JSON.stringify(dataToCache)
+              );
+
+              success = true;
+            } catch (error) {
+              if (
+                axios.isAxiosError(error) && // Vérifier si c'est une erreur Axios
+                error.response && // Vérifier si la réponse existe
+                error.response.status === 429
+              ) {
+                // Attendez un certain temps avant de réessayer
+                await new Promise((resolve) => setTimeout(resolve, 1000));
+                retryCount--;
+              } else {
+                break; // Sortir de la boucle en cas d'autres erreurs
+              }
             }
           }
         }
