@@ -133,7 +133,6 @@ const Playlist: React.FC<PlaylistProps> = ({ navigation, route }) => {
                 await new Promise((resolve) => setTimeout(resolve, 1000));
                 retryCount--;
               } else {
-                console.error("Une autre erreur s'est produite :", error);
                 break; // Sortir de la boucle en cas d'autres erreurs
               }
             }

@@ -23,12 +23,41 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ route }) => {
   const { music, name, artist, img, durationInSeconds } = route.params || {
     music: "",
   };
-
   const [sound, setSound] = useState<Audio.Sound | null>(null);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [position, setPosition] = useState<number>(0);
   const [duration, setDuration] = useState<number | null>(null);
+  // Nouvelle fonction pour mettre à jour la position lors du changement de la barre de progression
+  const onSliderValueChange = async (value: number) => {
+    if (sound) {
+      // Mettre en pause la musique si elle est en cours de lecture
+      if (isPlaying) {
+        await sound.pauseAsync();
+      }
 
+      // Définir la nouvelle position
+      await sound.setPositionAsync(value * 1000);
+      setPosition(value);
+
+      // Relancer la musique si elle était en cours de lecture
+      if (isPlaying) {
+        await sound.playAsync();
+      }
+    }
+  };
+  const onSliderSlidingComplete = async (value: number) => {
+    if (sound) {
+      await sound.setPositionAsync(value * 1000);
+      setPosition(value);
+
+      // Vérifier si la musique est terminée et redémarrer si nécessaire
+      const status = await sound.getStatusAsync();
+      if (status.isLoaded && status.positionMillis === status.durationMillis) {
+        await sound.setPositionAsync(0);
+        await sound.playAsync();
+      }
+    }
+  };
   useEffect(() => {
     const loadAudio = async () => {
       if (music) {
@@ -48,6 +77,10 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ route }) => {
                 setDuration(status.durationMillis / 1000);
               }
               setIsPlaying(status.isPlaying);
+              if (status.didJustFinish) {
+                sound.setPositionAsync(0);
+                setPosition(0);
+              }
             }
           });
 
@@ -97,7 +130,7 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ route }) => {
           setDuration(status.durationMillis / 1000);
         }
       }
-    }, 500);
+    }, 0.5);
 
     // Nettoyer l'intervalle lors du démontage du composant
     return () => clearInterval(interval);
@@ -108,6 +141,9 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ route }) => {
       if (isPlaying) {
         await sound.pauseAsync();
       } else {
+        if (position === duration) {
+          await sound.setPositionAsync(0);
+        }
         await sound.playAsync();
       }
     }
@@ -131,20 +167,19 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({ route }) => {
             thumbTintColor="#61B15A"
             thumbTouchSize={{ width: 50, height: 50 }}
             value={position}
-            onValueChange={(value) => setPosition(value)}
-            onSlidingComplete={async (value) => {
-              if (sound) {
-                await sound.setPositionAsync(value * 1000);
-                setPosition(value);
-              }
-            }}
+            onValueChange={onSliderValueChange}
+            onSlidingComplete={onSliderSlidingComplete}
           />
 
           <Text style={styles.songDuration}>
             {position !== null && duration !== null
-              ? `${Math.floor(position / 60)}:${
+              ? `${String(Math.floor(position / 60)).padStart(2, "0")}:${String(
                   Math.floor(position) % 60
-                } / ${Math.floor(duration / 60)}:${Math.floor(duration) % 60}`
+                ).padStart(2, "0")} / ${String(
+                  Math.floor(duration / 60)
+                ).padStart(2, "0")}:${String(
+                  Math.floor(duration) % 60
+                ).padStart(2, "0")}`
               : "Loading..."}
           </Text>
           <View style={styles.playerButtons}>
