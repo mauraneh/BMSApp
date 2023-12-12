@@ -18,7 +18,7 @@ export function BottomTabs() {
           tabBarStyle: {
             backgroundColor: "#fff",
             borderTopWidth: 0,
-            height: 110,
+            height: 90,
           },
           tabBarIconStyle: {
             justifyContent: "center",
@@ -29,6 +29,12 @@ export function BottomTabs() {
         <Tab.Screen
           name="home"
           component={Home}
+          listeners={({ navigation }) => ({
+            tabPress: (e) => {
+              e.preventDefault();
+              navigation.navigate("Home");
+            },
+          })}
           options={{
             tabBarLabel: "Accueil",
             headerShown: false,
@@ -45,9 +51,9 @@ export function BottomTabs() {
           name="Playlist"
           component={Playlist}
           options={{
-            tabBarLabel: "Playlist",
+            tabBarLabel: "",
             headerShown: false,
-            tabBarLabelStyle: { color: "#fff" },
+            tabBarShowLabel: false,
             tabBarIcon: ({ focused }) =>
               focused ? (
                 <MaterialCommunityIcons
